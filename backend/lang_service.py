@@ -56,6 +56,9 @@ def create_vectorstore(filepath, chat_id):
 def get_rag_response(chat_id, query):
     path = os.path.join(VECTOR_STORE_PATH, str(chat_id))
 
+    if not Config.GROQ_API_KEY:
+        raise RuntimeError("GROQ_API_KEY is not configured")
+
     embeddings = HuggingFaceEmbeddings(
         model_name="sentence-transformers/all-MiniLM-L6-v2"
     )
@@ -69,6 +72,7 @@ def get_rag_response(chat_id, query):
     retriever = vectorstore.as_retriever()
 
     llm = ChatGroq(
+        groq_api_key=Config.GROQ_API_KEY,
         model="llama-3.1-8b-instant",
         temperature=0
     )
