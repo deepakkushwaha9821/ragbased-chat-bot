@@ -273,8 +273,11 @@ def send_message(
                 history.append(AIMessage(content=msg.content))
 
         history.append(HumanMessage(content=user_input))
-        ai_response = get_response(history)
-        ai_text = ai_response.content
+        try:
+            ai_response = get_response(history)
+            ai_text = ai_response.content
+        except Exception:
+            ai_text = "AI service is not configured. Please set GROQ_API_KEY on the server."
 
     db.add(Message(chat_id=chat_id, role="user", content=user_input))
     ai_message = Message(chat_id=chat_id, role="ai", content=ai_text)
