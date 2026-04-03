@@ -2,7 +2,10 @@ from langchain_groq import ChatGroq
 from langchain_core.messages import AIMessage, SystemMessage
 from langgraph.graph import StateGraph
 from typing import TypedDict, List
-from .config import Config
+try:
+    from .config import Config
+except ImportError:
+    from config import Config
 
 llm = ChatGroq(
     groq_api_key=Config.GROQ_API_KEY,

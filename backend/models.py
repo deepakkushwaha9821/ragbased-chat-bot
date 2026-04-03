@@ -3,7 +3,10 @@ from datetime import datetime
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Text, create_engine
 from sqlalchemy.orm import declarative_base, relationship, sessionmaker
 
-from .config import Config
+try:
+    from .config import Config
+except ImportError:
+    from config import Config
 
 
 DATABASE_URL = Config.SQLALCHEMY_DATABASE_URI

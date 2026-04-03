@@ -10,7 +10,10 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
 from langchain_groq import ChatGroq
 
-from .config import Config
+try:
+    from .config import Config
+except ImportError:
+    from config import Config
 
 VECTOR_STORE_PATH = Config.VECTORSTORE_DIR
 

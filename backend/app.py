@@ -12,10 +12,16 @@ from sqlalchemy.orm import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
 
-from .config import Config
-from .lang_service import create_vectorstore, get_rag_response
-from .langgraph_service import get_response
-from .models import Chat, Message, SessionLocal, UploadedFile as ModelUploadedFile, User, init_db
+try:
+    from .config import Config
+    from .lang_service import create_vectorstore, get_rag_response
+    from .langgraph_service import get_response
+    from .models import Chat, Message, SessionLocal, UploadedFile as ModelUploadedFile, User, init_db
+except ImportError:
+    from config import Config
+    from lang_service import create_vectorstore, get_rag_response
+    from langgraph_service import get_response
+    from models import Chat, Message, SessionLocal, UploadedFile as ModelUploadedFile, User, init_db
 
 
 app = FastAPI(title="AI Chatbot API")
@@ -31,6 +37,7 @@ app.add_middleware(
 
 UPLOAD_FOLDER = Config.UPLOAD_DIR
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+os.makedirs(Config.VECTORSTORE_DIR, exist_ok=True)
 init_db()
 
 
