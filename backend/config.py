@@ -1,0 +1,21 @@
+import os
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+
+BACKEND_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = BACKEND_DIR.parent
+
+load_dotenv(PROJECT_ROOT / ".env")
+
+
+class Config:
+    SECRET_KEY = os.getenv("SECRET_KEY", "change-me")
+    JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", SECRET_KEY)
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL", f"sqlite:///{PROJECT_ROOT / 'database.db'}")
+    GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+    ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "10080"))
+    CORS_ORIGINS = [origin.strip() for origin in os.getenv("CORS_ORIGINS", "http://localhost:5173").split(",") if origin.strip()]
+    UPLOAD_DIR = str(PROJECT_ROOT / "uploads")
+    VECTORSTORE_DIR = str(PROJECT_ROOT / "vectorstores")
