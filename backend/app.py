@@ -30,6 +30,7 @@ security = HTTPBearer()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=Config.CORS_ORIGINS,
+    allow_origin_regex=Config.CORS_ORIGIN_REGEX,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
