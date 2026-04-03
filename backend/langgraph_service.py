@@ -7,10 +7,19 @@ try:
 except ImportError:
     from config import Config
 
-llm = ChatGroq(
-    groq_api_key=Config.GROQ_API_KEY,
-    model="llama-3.1-8b-instant"
-)
+llm = None
+
+
+def get_llm():
+    global llm
+    if llm is None:
+        if not Config.GROQ_API_KEY:
+            raise RuntimeError("GROQ_API_KEY is not configured")
+        llm = ChatGroq(
+            groq_api_key=Config.GROQ_API_KEY,
+            model="llama-3.1-8b-instant"
+        )
+    return llm
 
 class State(TypedDict):
     messages: List
@@ -25,7 +34,8 @@ SYSTEM_PROMPT = (
 
 def call_model(state):
     history = state["messages"]
-    response = llm.invoke([SystemMessage(content=SYSTEM_PROMPT), *history])
+    model = get_llm()
+    response = model.invoke([SystemMessage(content=SYSTEM_PROMPT), *history])
 
     last_ai_message = next(
         (message for message in reversed(history) if isinstance(message, AIMessage)),
@@ -34,7 +44,7 @@ def call_model(state):
 
     # If the model repeats exactly, ask for a reformulated answer one time.
     if last_ai_message and response.content.strip() == last_ai_message.content.strip():
-        response = llm.invoke(
+        response = model.invoke(
             [
                 SystemMessage(content=SYSTEM_PROMPT),
                 *history,
